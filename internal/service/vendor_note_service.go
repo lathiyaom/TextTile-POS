@@ -1,6 +1,8 @@
 package service
 
 import (
+	"errors"
+
 	"github.com/TextTile/pos-go/internal/model"
 	"github.com/TextTile/pos-go/internal/repository"
 )
@@ -8,6 +10,7 @@ import (
 type VendorNoteService interface {
 	CreateNote(vendorID uint, req *model.VendorNoteCreateRequest) (*model.VendorNoteResponse, error)
 	GetNotesByVendorID(vendorID uint) ([]model.VendorNoteResponse, error)
+	UpdateNote(vendorID uint, noteID uint, req *model.VendorNoteCreateRequest) (*model.VendorNoteResponse, error)
 	DeleteNote(id uint) error
 }
 
@@ -63,4 +66,23 @@ func (s *vendorNoteService) DeleteNote(id uint) error {
 	}
 
 	return s.noteRepo.Delete(id)
+}
+
+func (s *vendorNoteService) UpdateNote(vendorID uint, noteID uint, req *model.VendorNoteCreateRequest) (*model.VendorNoteResponse, error) {
+	note, err := s.noteRepo.FindByID(noteID)
+	if err != nil {
+		return nil, err
+	}
+
+	if note.VendorID != vendorID {
+		return nil, errors.New("note does not belong to this vendor")
+	}
+
+	note.NoteText = req.NoteText
+	if err := s.noteRepo.Update(note); err != nil {
+		return nil, err
+	}
+
+	response := note.ToResponse()
+	return &response, nil
 }

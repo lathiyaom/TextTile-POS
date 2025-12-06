@@ -12,6 +12,7 @@ type VendorNoteRepository interface {
 	FindByVendorID(vendorID uint) ([]model.VendorNote, error)
 	FindByID(id uint) (*model.VendorNote, error)
 	Delete(id uint) error
+	Update(note *model.VendorNote) error
 }
 
 type vendorNoteRepository struct {
@@ -46,4 +47,8 @@ func (r *vendorNoteRepository) FindByID(id uint) (*model.VendorNote, error) {
 
 func (r *vendorNoteRepository) Delete(id uint) error {
 	return r.db.Delete(&model.VendorNote{}, id).Error
+}
+
+func (r *vendorNoteRepository) Update(note *model.VendorNote) error {
+	return r.db.Save(note).Error
 }

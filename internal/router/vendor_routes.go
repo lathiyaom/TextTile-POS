@@ -43,6 +43,7 @@ func (r *Router) setupVendorRoutes(rg *gin.RouterGroup) {
 
 		vendors.POST("/:id/notes", r.vendorNoteHandler.CreateNote)
 		vendors.GET("/:id/notes", r.vendorNoteHandler.GetNotes)
+		vendors.PUT("/:id/notes/:noteId", r.vendorNoteHandler.UpdateNote)
 		vendors.DELETE("/:id/notes/:noteId", r.vendorNoteHandler.DeleteNote)
 
 		vendors.GET("/:id/activity", r.vendorAuditLogHandler.GetActivity)

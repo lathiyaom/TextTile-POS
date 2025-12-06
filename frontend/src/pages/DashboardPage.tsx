@@ -2,7 +2,6 @@ import React from 'react';
 import { DashboardLayout } from '@/layouts/DashboardLayout';
 import { useAuthStore } from '@/store/authStore';
 import {
-    BarChart3,
     TrendingUp,
     Users,
     ShoppingCart,

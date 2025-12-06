@@ -74,10 +74,12 @@ export interface VendorUpdateRequest {
 
 export interface VendorTypeCreateRequest {
     name: string;
+    is_active?: boolean;
 }
 
 export interface PaymentModeCreateRequest {
     name: string;
+    is_active?: boolean;
 }
 
 // Indian States

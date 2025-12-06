@@ -1,0 +1,29 @@
+version: '3.8'
+
+services:
+  backend:
+    build:
+      target: builder
+    container_name: pos_backend_dev
+    volumes:
+      - ./:/app
+    # simple run, for hot reload use 'air' if configured
+    command: go run cmd/main.go
+    environment:
+      APP_ENV: development
+
+  frontend:
+    build:
+      target: build
+    container_name: pos_frontend_dev
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    command: npm run dev -- --host
+    ports:
+      - "${FRONTEND_PORT:-5173}:5173"
+    environment:
+      # In dev, frontend talks to backend directly via host localhost (browser side)
+      # or via proxy configuration in vite.config.ts. 
+      # Since we expose backend on 8080, localhost:8080 works for browser.
+      - VITE_API_BASE_URL=http://localhost:${BACKEND_PORT:-8080}/api/v1

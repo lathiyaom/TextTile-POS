@@ -117,6 +117,11 @@ export const vendorApi = {
         return response.data.data!;
     },
 
+    updateNote: async (id: number, noteId: number, noteText: string): Promise<VendorNote> => {
+        const response = await apiClient.put<ApiResponse<VendorNote>>(`/vendors/${id}/notes/${noteId}`, { note_text: noteText });
+        return response.data.data!;
+    },
+
     deleteNote: async (id: number, noteId: number): Promise<void> => {
         await apiClient.delete(`/vendors/${id}/notes/${noteId}`);
     },

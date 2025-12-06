@@ -2,6 +2,9 @@ package config
 
 import (
 	"fmt"
+	"os"
+	"strconv"
+	"strings"
 )
 
 type Config struct {
@@ -41,34 +44,42 @@ type LogConfig struct {
 
 var AppConfig *Config
 
-// LoadConfig loads static configuration directly (no env file)
+// getEnv gets an environment variable or returns a default value
+func getEnv(key, defaultValue string) string {
+	if value, exists := os.LookupEnv(key); exists {
+		return value
+	}
+	return defaultValue
+}
+
+// LoadConfig loads configuration from environment variables
 func LoadConfig() (*Config, error) {
+	jwtExpiry, _ := strconv.Atoi(getEnv("JWT_EXPIRY_HOURS", "24"))
+
+	allowedOrigins := getEnv("CORS_ALLOWED_ORIGINS", "http://localhost:5173,http://localhost:3000")
 
 	config := &Config{
 		Server: ServerConfig{
-			Port: "8080",
-			Host: "localhost",
-			Env:  "development",
+			Port: getEnv("SERVER_PORT", "8080"),
+			Host: getEnv("SERVER_HOST", "0.0.0.0"), // Changed default to 0.0.0.0 for Docker
+			Env:  getEnv("APP_ENV", "development"),
 		},
 		Database: DatabaseConfig{
-			Host:     "localhost",
-			Port:     "3306",
-			User:     "root",
-			Password: "root",
-			DBName:   "TextTile",
+			Host:     getEnv("DB_HOST", "localhost"),
+			Port:     getEnv("DB_PORT", "3306"),
+			User:     getEnv("DB_USER", "root"),
+			Password: getEnv("DB_PASSWORD", "root"),
+			DBName:   getEnv("DB_NAME", "TextTile"),
 		},
 		JWT: JWTConfig{
-			Secret:      "pos-super-secret-jwt-key-2024-change-in-production",
-			ExpiryHours: 24,
+			Secret:      getEnv("JWT_SECRET", "pos-super-secret-jwt-key-2024-change-in-production"),
+			ExpiryHours: jwtExpiry,
 		},
 		CORS: CORSConfig{
-			AllowedOrigins: []string{
-				"http://localhost:5173",
-				"http://localhost:3000",
-			},
+			AllowedOrigins: strings.Split(allowedOrigins, ","),
 		},
 		Log: LogConfig{
-			Level: "debug",
+			Level: getEnv("LOG_LEVEL", "debug"),
 		},
 	}
 

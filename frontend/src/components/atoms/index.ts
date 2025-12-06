@@ -5,3 +5,4 @@ export { Badge } from './Badge';
 export { Select } from './Select';
 export { Modal } from './Modal';
 export { SearchableSelect } from './SearchableSelect';
+export { TextArea } from './TextArea';

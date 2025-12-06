@@ -2,25 +2,15 @@ import React, { useState } from 'react';
 import { NavLink, useNavigate, useLocation } from 'react-router-dom';
 import { useAuthStore } from '@/store/authStore';
 import {
-    Users,
-    Package,
-    ShoppingCart,
-    BarChart3,
     Settings,
     LogOut,
     Truck,
-    FileText,
-    Clock,
-    CreditCard,
     Receipt,
-    FileCheck,
     ArrowLeft,
     ArrowRight,
     ChevronDown,
     ChevronRight,
     Home,
-    DollarSign,
-    FolderOpen,
 } from 'lucide-react';
 
 interface SidebarItem {
@@ -89,17 +79,15 @@ export const Sidebar: React.FC<SidebarProps> = ({ isCollapsed, onToggle }) => {
                 <li>
                     <button
                         onClick={() => toggleSection(item.label.toLowerCase())}
-                        className={`w-full flex items-center gap-2.5 px-4 py-2 text-sm transition-colors ${
-                            active
+                        className={`w-full flex items-center gap-2.5 px-4 py-2 text-sm transition-colors ${active
                                 ? 'bg-blue-50 border-l-2 border-blue-600 text-blue-700 font-medium'
                                 : 'text-gray-700 hover:bg-gray-50 border-l-2 border-transparent'
-                        } ${isCollapsed ? 'justify-center px-2' : ''}`}
+                            } ${isCollapsed ? 'justify-center px-2' : ''}`}
                         title={isCollapsed ? item.label : undefined}
                     >
                         <item.icon
-                            className={`w-4 h-4 flex-shrink-0 ${
-                                active ? 'text-blue-600' : 'text-gray-400'
-                            }`}
+                            className={`w-4 h-4 flex-shrink-0 ${active ? 'text-blue-600' : 'text-gray-400'
+                                }`}
                         />
                         {!isCollapsed && (
                             <>
@@ -130,10 +118,9 @@ export const Sidebar: React.FC<SidebarProps> = ({ isCollapsed, onToggle }) => {
                 <NavLink
                     to={item.path}
                     className={({ isActive: navActive }) =>
-                        `group flex items-center gap-2.5 px-4 py-2 text-sm transition-colors border-l-2 ${
-                            navActive || active
-                                ? 'bg-blue-50 border-blue-600 text-blue-700 font-medium'
-                                : 'border-transparent text-gray-700 hover:bg-gray-50 hover:text-gray-900'
+                        `group flex items-center gap-2.5 px-4 py-2 text-sm transition-colors border-l-2 ${navActive || active
+                            ? 'bg-blue-50 border-blue-600 text-blue-700 font-medium'
+                            : 'border-transparent text-gray-700 hover:bg-gray-50 hover:text-gray-900'
                         } ${isCollapsed ? 'justify-center px-2' : ''}`
                     }
                     title={isCollapsed ? item.label : undefined}
@@ -141,11 +128,10 @@ export const Sidebar: React.FC<SidebarProps> = ({ isCollapsed, onToggle }) => {
                     {({ isActive: navActive }) => (
                         <>
                             <item.icon
-                                className={`w-4 h-4 flex-shrink-0 ${
-                                    navActive || active
+                                className={`w-4 h-4 flex-shrink-0 ${navActive || active
                                         ? 'text-blue-600'
                                         : 'text-gray-400 group-hover:text-gray-600'
-                                }`}
+                                    }`}
                             />
                             {!isCollapsed && <span className="truncate">{item.label}</span>}
                         </>
@@ -157,9 +143,8 @@ export const Sidebar: React.FC<SidebarProps> = ({ isCollapsed, onToggle }) => {
 
     return (
         <aside
-            className={`h-screen bg-white border-r border-gray-200 flex flex-col fixed left-0 top-0 z-50 transition-all duration-300 ${
-                isCollapsed ? 'w-16' : 'w-60'
-            }`}
+            className={`h-screen bg-white border-r border-gray-200 flex flex-col fixed left-0 top-0 z-50 transition-all duration-300 ${isCollapsed ? 'w-16' : 'w-60'
+                }`}
         >
             {/* TOP HEADER WITH TOGGLE */}
             <div className="h-14 px-4 flex items-center justify-between border-b border-gray-200 flex-shrink-0">
@@ -214,10 +199,9 @@ export const Sidebar: React.FC<SidebarProps> = ({ isCollapsed, onToggle }) => {
                     <NavLink
                         to="/settings"
                         className={({ isActive }) =>
-                            `flex items-center gap-2 px-2 py-1.5 rounded-md text-xs transition-colors ${
-                                isActive
-                                    ? 'bg-blue-50 text-blue-700'
-                                    : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
+                            `flex items-center gap-2 px-2 py-1.5 rounded-md text-xs transition-colors ${isActive
+                                ? 'bg-blue-50 text-blue-700'
+                                : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
                             }`
                         }
                     >
