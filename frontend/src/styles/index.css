@@ -1,0 +1,157 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* =======================
+   GLOBAL STYLES
+======================= */
+@layer base {
+  body {
+    @apply bg-slate-50 text-slate-900 font-sans antialiased;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    @apply text-slate-900 font-semibold;
+  }
+
+  table {
+    @apply text-sm text-slate-800;
+  }
+}
+
+/* =======================
+   COMPONENTS (Zoho Styled)
+======================= */
+@layer components {
+
+  /* ---------- BUTTONS ---------- */
+  .btn {
+    @apply px-3.5 py-2 rounded-md font-medium leading-4 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-1 select-none;
+  }
+
+  .btn-primary {
+    @apply bg-primary-600 text-white shadow-sm hover:bg-primary-700 focus:ring-primary-500;
+  }
+
+  .btn-secondary {
+    @apply bg-slate-200 text-slate-800 hover:bg-slate-300 focus:ring-slate-400;
+  }
+
+  .btn-danger {
+    @apply bg-red-600 text-white hover:bg-red-700 focus:ring-red-500;
+  }
+
+  .btn-ghost {
+    @apply bg-transparent text-slate-600 hover:bg-slate-100;
+  }
+
+  .btn-soft {
+    @apply bg-primary-50 text-primary-700 hover:bg-primary-100;
+  }
+
+  .btn-xs {
+    @apply px-2 py-1 text-xs;
+  }
+
+  .btn-sm {
+    @apply px-2.5 py-1.5 text-xs;
+  }
+
+
+  /* ---------- INPUT ---------- */
+  .input {
+    @apply w-full px-3.5 py-2 border border-slate-300 rounded-md text-sm focus:outline-none focus:ring-1 focus:ring-primary-500 focus:border-primary-500 bg-white transition-shadow;
+  }
+
+  .input-sm {
+    @apply px-2.5 py-1.5 text-xs;
+  }
+
+
+  /* ---------- CARD ---------- */
+  .card {
+    @apply bg-white rounded-xl border border-slate-200 shadow-sm;
+  }
+
+  .card-soft {
+    @apply bg-white rounded-lg border border-slate-200 shadow-sm px-4 py-3;
+  }
+
+
+  /* ---------- BADGES ---------- */
+  .badge {
+    @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium;
+  }
+
+  .badge-success {
+    @apply bg-emerald-50 text-emerald-700 border border-emerald-200;
+  }
+
+  .badge-warning {
+    @apply bg-amber-50 text-amber-700 border border-amber-200;
+  }
+
+  .badge-danger {
+    @apply bg-red-50 text-red-700 border border-red-200;
+  }
+
+  .badge-info {
+    @apply bg-blue-50 text-blue-700 border border-blue-200;
+  }
+
+  .badge-neutral {
+    @apply bg-slate-100 text-slate-700 border border-slate-200;
+  }
+
+
+  /* ---------- TABLE ---------- */
+  .table-header {
+    @apply text-[11px] font-semibold uppercase tracking-wide text-slate-500;
+  }
+
+  .table-row {
+    @apply hover:bg-slate-50 cursor-pointer select-none;
+  }
+
+  .table-row-selected {
+    @apply bg-blue-50/60;
+  }
+
+
+  /* ---------- PANEL CONTAINERS ---------- */
+  .side-panel {
+    @apply bg-white border-l border-slate-200 shadow-sm;
+  }
+
+  .panel-header {
+    @apply py-3 px-4 border-b border-slate-200 bg-slate-50 font-medium;
+  }
+
+  .panel-body {
+    @apply p-4;
+  }
+
+}
+
+/* =======================
+   UTILITY HELPERS
+======================= */
+@layer utilities {
+
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  .scroll-hide::-webkit-scrollbar {
+    display: none;
+  }
+
+  .shadow-zoho {
+    @apply shadow-[0_0_8px_rgba(0, 0, 0, 0.04)];
+  }
+}
