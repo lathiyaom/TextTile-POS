@@ -12,10 +12,14 @@ type Router struct {
 	userHandler             *handler.UserHandler
 	vendorTypeHandler       *handler.VendorTypeHandler
 	paymentModeHandler      *handler.PaymentModeHandler
+	paymentTypeHandler      *handler.PaymentTypeHandler
 	vendorHandler           *handler.VendorHandler
 	vendorNoteHandler       *handler.VendorNoteHandler
 	vendorAuditLogHandler   *handler.VendorAuditLogHandler
 	vendorAttachmentHandler *handler.VendorAttachmentHandler
+	posSettingsHandler      *handler.POSSettingsHandler
+	noteHandler             *handler.NoteHandler
+	billHandler             *handler.BillHandler
 	config                  *config.Config
 }
 
@@ -23,10 +27,14 @@ func NewRouter(
 	userHandler *handler.UserHandler,
 	vendorTypeHandler *handler.VendorTypeHandler,
 	paymentModeHandler *handler.PaymentModeHandler,
+	paymentTypeHandler *handler.PaymentTypeHandler,
 	vendorHandler *handler.VendorHandler,
 	vendorNoteHandler *handler.VendorNoteHandler,
 	vendorAuditLogHandler *handler.VendorAuditLogHandler,
 	vendorAttachmentHandler *handler.VendorAttachmentHandler,
+	posSettingsHandler *handler.POSSettingsHandler,
+	noteHandler *handler.NoteHandler,
+	billHandler *handler.BillHandler,
 	cfg *config.Config,
 ) *Router {
 	return &Router{
@@ -34,10 +42,14 @@ func NewRouter(
 		userHandler:             userHandler,
 		vendorTypeHandler:       vendorTypeHandler,
 		paymentModeHandler:      paymentModeHandler,
+		paymentTypeHandler:      paymentTypeHandler,
 		vendorHandler:           vendorHandler,
 		vendorNoteHandler:       vendorNoteHandler,
 		vendorAuditLogHandler:   vendorAuditLogHandler,
 		vendorAttachmentHandler: vendorAttachmentHandler,
+		posSettingsHandler:      posSettingsHandler,
+		noteHandler:             noteHandler,
+		billHandler:             billHandler,
 		config:                  cfg,
 	}
 }
@@ -60,7 +72,11 @@ func (r *Router) Setup() *gin.Engine {
 		r.setupUserRoutes(v1)
 		r.setupVendorTypeRoutes(v1)
 		r.setupPaymentModeRoutes(v1)
+		r.setupPaymentTypeRoutes(v1)
 		r.setupVendorRoutes(v1)
+		r.setupPOSSettingsRoutes(v1)
+		r.setupBillRoutes(v1)
+		r.setupNoteRoutes(v1)
 	}
 
 	return r.engine

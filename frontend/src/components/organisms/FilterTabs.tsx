@@ -1,22 +1,37 @@
 import React from 'react';
-import type { VendorStatus } from '@/types';
+import type { VendorStatus, PaymentStatus } from '@/types';
 
 interface FilterTabsProps {
-    value: VendorStatus | '';
-    onChange: (value: VendorStatus | '') => void;
+    value: VendorStatus | PaymentStatus | '';
+    onChange: (value: any) => void;
+    tabs?: { label: string; value: any }[];
 }
 
-const STATUS_TABS: { label: string; value: VendorStatus | '' }[] = [
+const VENDOR_STATUS_TABS: { label: string; value: VendorStatus | '' }[] = [
     { label: 'All Vendors', value: '' },
     { label: 'Active', value: 'active' },
     { label: 'Inactive', value: 'inactive' },
     { label: 'Blacklisted', value: 'blacklisted' },
 ];
 
-export const FilterTabs: React.FC<FilterTabsProps> = ({ value, onChange }) => {
+const PAYMENT_STATUS_TABS: { label: string; value: PaymentStatus | '' }[] = [
+    { label: 'All Bills', value: '' },
+    { label: 'Paid', value: 'Paid' },
+    { label: 'Unpaid', value: 'Unpaid' },
+    { label: 'Partially Paid', value: 'Partially Paid' },
+];
+
+export const FilterTabs: React.FC<FilterTabsProps> = ({ value, onChange, tabs }) => {
+    // Auto-detect tabs based on value type if not provided
+    const tabsToUse = tabs || (
+        typeof value === 'string' && ['Paid', 'Unpaid', 'Partially Paid', ''].includes(value)
+            ? PAYMENT_STATUS_TABS
+            : VENDOR_STATUS_TABS
+    );
+
     return (
         <div className="flex gap-1 rounded-full bg-slate-100 px-1 py-1">
-            {STATUS_TABS.map((tab) => (
+            {tabsToUse.map((tab) => (
                 <button
                     key={tab.label}
                     onClick={() => onChange(tab.value)}

@@ -33,8 +33,14 @@ func (s *paymentModeService) CreatePaymentMode(req *model.PaymentModeCreateReque
 		return nil, errors.New("payment mode with this name already exists")
 	}
 
+	category := model.PaymentModeCategoryOther
+	if req.Category != "" {
+		category = model.PaymentModeCategory(req.Category)
+	}
+
 	paymentMode := &model.PaymentMode{
-		Name: req.Name,
+		Name:     req.Name,
+		Category: category,
 	}
 
 	if err := s.paymentModeRepo.Create(paymentMode); err != nil {
@@ -86,6 +92,10 @@ func (s *paymentModeService) UpdatePaymentMode(id uint, req *model.PaymentModeUp
 			return nil, errors.New("payment mode with this name already exists")
 		}
 		paymentMode.Name = req.Name
+	}
+
+	if req.Category != "" {
+		paymentMode.Category = model.PaymentModeCategory(req.Category)
 	}
 
 	if req.IsActive != nil {

@@ -1,45 +1,45 @@
-# Binaries for programs and plugins
+# ==========================================================
+# Go backend
+# ==========================================================
 *.exe
-*.exe~
 *.dll
 *.so
 *.dylib
-
-# Test binary, built with `go test -c`
 *.test
-
-# Output of the go coverage tool
 *.out
-
-# Go workspace file
 go.work
 
-# Dependency directories
+# Temporary build output (Air, go build, etc)
+bin/
+tmp/
+pos-server
+
+# Vendor dependencies
 vendor/
+
+# Logs
+*.log
 
 # Environment variables
 .env
 
-# IDE
+# ==========================================================
+# Frontend
+# ==========================================================
+frontend/node_modules/
+frontend/dist/
+frontend/.env
+frontend/.env.local
+frontend/.env.production
+frontend/.env.development
+
+# ==========================================================
+# IDE & OS files
+# ==========================================================
 .vscode/
 .idea/
 *.swp
 *.swo
 *~
-
-# OS
 .DS_Store
 Thumbs.db
-
-# Logs
-*.log
-
-# Frontend
-frontend/node_modules/
-frontend/dist/
-frontend/.env
-
-# Build outputs
-bin/
-*.exe
-pos-server

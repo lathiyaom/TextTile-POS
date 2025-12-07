@@ -57,3 +57,6 @@ export interface PaginatedResponse<T> {
 
 // Export vendor types
 export * from './vendor';
+
+// Export bill types
+export * from './bill';

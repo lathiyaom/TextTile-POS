@@ -6,9 +6,12 @@ export interface VendorType {
     updated_at: string;
 }
 
+export type PaymentModeCategory = 'Cash' | 'Card' | 'UPI' | 'Bank Transfer' | 'Cheque' | 'Other';
+
 export interface PaymentMode {
     id: number;
     name: string;
+    category: PaymentModeCategory;
     is_active: boolean;
     created_at: string;
     updated_at: string;
@@ -79,6 +82,7 @@ export interface VendorTypeCreateRequest {
 
 export interface PaymentModeCreateRequest {
     name: string;
+    category?: PaymentModeCategory;
     is_active?: boolean;
 }
 

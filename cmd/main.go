@@ -36,22 +36,26 @@ func main() {
 		log.Fatal("Failed to run migrations:", err)
 	}
 
-	// // Seed initial data
-	// if err := migrations.SeedData(db); err != nil {
-	// 	log.Fatal("Failed to seed data:", err)
-	// }
+	// Seed initial data
+	if err := migrations.SeedData(db); err != nil {
+		log.Fatal("Failed to seed data:", err)
+	}
 
 	// Initialize repositories
 	userRepo := repository.NewUserRepository(db)
 	vendorTypeRepo := repository.NewVendorTypeRepository(db)
 	paymentModeRepo := repository.NewPaymentModeRepository(db)
+	paymentTypeRepo := repository.NewPaymentTypeRepository(db)
 	vendorRepo := repository.NewVendorRepository(db)
 	vendorNoteRepo := repository.NewVendorNoteRepository(db)
 	vendorAuditLogRepo := repository.NewVendorAuditLogRepository(db)
 	vendorAttachmentRepo := repository.NewVendorAttachmentRepository(db)
+	posSettingsRepo := repository.NewPOSSettingsRepository(db)
+	noteRepo := repository.NewNoteRepository(db)
+	billRepo := repository.NewBillRepository(db)
 
 	// Initialize services
-	services := service.NewServices(userRepo, vendorTypeRepo, paymentModeRepo, vendorRepo)
+	services := service.NewServices(userRepo, vendorTypeRepo, paymentModeRepo, paymentTypeRepo, vendorRepo, posSettingsRepo, noteRepo, billRepo)
 	vendorNoteService := service.NewVendorNoteService(vendorNoteRepo, vendorRepo)
 	vendorAuditLogService := service.NewVendorAuditLogService(vendorAuditLogRepo)
 	vendorAttachmentService := service.NewVendorAttachmentService(vendorAttachmentRepo, vendorRepo)
@@ -60,13 +64,17 @@ func main() {
 	userHandler := handler.NewUserHandler(services.UserService)
 	vendorTypeHandler := handler.NewVendorTypeHandler(services.VendorTypeService)
 	paymentModeHandler := handler.NewPaymentModeHandler(services.PaymentModeService)
+	paymentTypeHandler := handler.NewPaymentTypeHandler(services.PaymentTypeService)
 	vendorHandler := handler.NewVendorHandler(services.VendorService)
 	vendorNoteHandler := handler.NewVendorNoteHandler(vendorNoteService)
 	vendorAuditLogHandler := handler.NewVendorAuditLogHandler(vendorAuditLogService)
 	vendorAttachmentHandler := handler.NewVendorAttachmentHandler(vendorAttachmentService)
+	posSettingsHandler := handler.NewPOSSettingsHandler(services.POSSettingsService)
+	noteHandler := handler.NewNoteHandler(services.NoteService)
+	billHandler := handler.NewBillHandler(services.BillService)
 
 	// Setup router
-	r := router.NewRouter(userHandler, vendorTypeHandler, paymentModeHandler, vendorHandler, vendorNoteHandler, vendorAuditLogHandler, vendorAttachmentHandler, cfg)
+	r := router.NewRouter(userHandler, vendorTypeHandler, paymentModeHandler, paymentTypeHandler, vendorHandler, vendorNoteHandler, vendorAuditLogHandler, vendorAttachmentHandler, posSettingsHandler, noteHandler, billHandler, cfg)
 	engine := r.Setup()
 
 	// Start server

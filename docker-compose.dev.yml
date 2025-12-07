@@ -1,29 +1,165 @@
-version: '3.8'
+# =============================================================================
+# Docker Compose - Development Configuration
+# Industry Standard Best Practices:
+# - Hot reload support
+# - Volume mounts for live code changes
+# - Debug ports exposed
+# - Development-friendly settings
+# =============================================================================
 
 services:
-  backend:
-    build:
-      target: builder
-    container_name: pos_backend_dev
-    volumes:
-      - ./:/app
-    # simple run, for hot reload use 'air' if configured
-    command: go run cmd/main.go
-    environment:
-      APP_ENV: development
-
-  frontend:
-    build:
-      target: build
-    container_name: pos_frontend_dev
-    volumes:
-      - ./frontend:/app
-      - /app/node_modules
-    command: npm run dev -- --host
+  # ---------------------------------------------------------------------------
+  # Database Service - Development
+  # ---------------------------------------------------------------------------
+  db:
     ports:
-      - "${FRONTEND_PORT:-5173}:5173"
+      - "${DB_PORT:-3307}:3306"
+    
     environment:
-      # In dev, frontend talks to backend directly via host localhost (browser side)
-      # or via proxy configuration in vite.config.ts. 
-      # Since we expose backend on 8080, localhost:8080 works for browser.
-      - VITE_API_BASE_URL=http://localhost:${BACKEND_PORT:-8080}/api/v1
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:-rootpassword}
+      MYSQL_DATABASE: ${DB_NAME:-texttile}
+      MYSQL_USER: ${DB_USER:-posuser}
+      MYSQL_PASSWORD: ${DB_PASSWORD:-devpassword}
+    
+    command: 
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_unicode_ci
+      - --default-authentication-plugin=mysql_native_password
+      - --max_connections=200
+      - --innodb_buffer_pool_size=256M
+    
+    volumes:
+      - db_dev_data:/var/lib/mysql
+      - ./scripts/dev-seed.sql:/docker-entrypoint-initdb.d/seed.sql:ro
+
+  # ---------------------------------------------------------------------------
+  # Backend Service - Development with Hot Reload
+  # ---------------------------------------------------------------------------
+  backend:
+    # Override production image - build from local source
+    image: pos-backend:dev
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+      target: development
+    
+    container_name: pos_backend_dev
+    
+    environment:
+      APP_ENV: ${APP_ENV:-development}
+      LOG_LEVEL: ${LOG_LEVEL:-debug}
+      DB_HOST: db
+      DB_PORT: 3306
+      DB_USER: ${DB_USER:-posuser}
+      DB_PASSWORD: ${DB_PASSWORD:-devpassword}
+      DB_NAME: ${DB_NAME:-texttile}
+      JWT_SECRET: ${JWT_SECRET:-dev-secret-change-in-production}
+      CORS_ALLOWED_ORIGINS: ${CORS_ALLOWED_ORIGINS:-http://localhost:5173,http://localhost:3000}
+    
+    ports:
+      - "8080:8080"
+      - "2345:2345"  # Delve debugger port
+    
+    volumes:
+      # Mount source code for hot reload
+      - ./:/app:cached
+      - go_mod_cache:/go/pkg/mod
+      - go_build_cache:/root/.cache/go-build
+    
+    # Install Air and run with hot reload
+    command: >
+      sh -c "
+        echo 'Installing Air for hot reload...' &&
+        go install github.com/air-verse/air@v1.52.3 &&
+        echo 'Starting application with hot reload...' &&
+        air -c .air.toml
+      "
+    
+    # Remove resource limits in dev
+    deploy:
+      resources:
+        limits:
+          cpus: '2.0'
+          memory: 2G
+
+  # ---------------------------------------------------------------------------
+  # Frontend Service - Development with Hot Reload
+  # ---------------------------------------------------------------------------
+  frontend:
+    # Override production image - build from local source
+    image: pos-frontend:dev
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile.dev
+      target: development
+    
+    container_name: pos_frontend_dev
+    
+    environment:
+      VITE_API_BASE_URL: ${VITE_API_BASE_URL:-http://localhost:8080/api/v1}
+      VITE_APP_NAME: ${VITE_APP_NAME:-POS System (Dev)}
+      VITE_APP_VERSION: ${VITE_APP_VERSION:-dev}
+    
+    ports:
+      - "5173:5173"
+    
+    volumes:
+      # Mount source code for hot reload
+      - ./frontend:/app:cached
+      # Prevent node_modules from being overwritten
+      - /app/node_modules
+      - frontend_cache:/app/.vite
+    
+    # Start Vite dev server with hot reload
+    command: npm run dev -- --host 0.0.0.0
+    
+    # Remove resource limits in dev
+    deploy:
+      resources:
+        limits:
+          cpus: '2.0'
+          memory: 2G
+    
+    stdin_open: true
+    tty: true
+
+  # ---------------------------------------------------------------------------
+  # Adminer - Database Management Tool (Development Only)
+  # ---------------------------------------------------------------------------
+  adminer:
+    image: adminer:latest
+    container_name: pos_adminer
+    restart: unless-stopped
+    
+    ports:
+      - "8081:8080"
+    
+    networks:
+      - backend_network
+    
+    environment:
+      ADMINER_DEFAULT_SERVER: db
+      ADMINER_DESIGN: nette
+    
+    depends_on:
+      - db
+
+# =============================================================================
+# Development Volumes
+# =============================================================================
+volumes:
+  db_dev_data:
+    driver: local
+    name: pos_db_dev_data
+  
+  go_mod_cache:
+    driver: local
+    name: pos_go_mod_cache
+  
+  go_build_cache:
+    driver: local
+    name: pos_go_build_cache
+  
+  frontend_cache:
+    driver: local
+    name: pos_frontend_cache

@@ -123,15 +123,17 @@ func getFinancialYear() (int, int) {
 	}
 	return year - 1, year
 }
-
 func (r *vendorRepository) GenerateVendorNo() (string, error) {
-	startYear, endYear := getFinancialYear()
-	fyPrefix := fmt.Sprintf("VEN-%d-%d-", startYear, endYear)
+	prefix := "VEN-"
 
 	var maxSequence int
 	var latestVendor model.Vendor
 
-	err := r.db.Where("vendor_no LIKE ?", fyPrefix+"%").Order("vendor_no DESC").First(&latestVendor).Error
+	err := r.db.
+		Where("vendor_no LIKE ?", prefix+"%").
+		Order("vendor_no DESC").
+		First(&latestVendor).Error
+
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			maxSequence = 0
@@ -140,7 +142,7 @@ func (r *vendorRepository) GenerateVendorNo() (string, error) {
 		}
 	} else {
 		var sequence int
-		_, err := fmt.Sscanf(latestVendor.VendorNo, fyPrefix+"%05d", &sequence)
+		_, err := fmt.Sscanf(latestVendor.VendorNo, prefix+"%05d", &sequence)
 		if err != nil {
 			return "", fmt.Errorf("failed to parse vendor number: %w", err)
 		}
@@ -148,5 +150,5 @@ func (r *vendorRepository) GenerateVendorNo() (string, error) {
 	}
 
 	nextSequence := maxSequence + 1
-	return fmt.Sprintf("%s%05d", fyPrefix, nextSequence), nil
+	return fmt.Sprintf("%s%05d", prefix, nextSequence), nil
 }

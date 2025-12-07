@@ -6,6 +6,9 @@ import { DashboardPage } from '@/pages/DashboardPage';
 import { UsersPage } from '@/pages/UsersPage';
 import { VendorsPage } from '@/pages/VendorsPage';
 import { VendorCreatePage } from '@/pages/VendorCreatePage';
+import { SettingsPage } from '@/pages/SettingsPage';
+import { BillsPage } from '@/pages/BillsPage';
+import { BillCreatePage } from '@/pages/BillCreatePage';
 import { ProtectedRoute } from './ProtectedRoute';
 
 export const AppRoutes: React.FC = () => {
@@ -56,6 +59,33 @@ export const AppRoutes: React.FC = () => {
                     element={
                         <ProtectedRoute>
                             <VendorCreatePage />
+                        </ProtectedRoute>
+                    }
+                />
+
+                <Route
+                    path="/bills"
+                    element={
+                        <ProtectedRoute>
+                            <BillsPage />
+                        </ProtectedRoute>
+                    }
+                />
+
+                <Route
+                    path="/bills/create"
+                    element={
+                        <ProtectedRoute>
+                            <BillCreatePage />
+                        </ProtectedRoute>
+                    }
+                />
+
+                <Route
+                    path="/settings"
+                    element={
+                        <ProtectedRoute>
+                            <SettingsPage />
                         </ProtectedRoute>
                     }
                 />

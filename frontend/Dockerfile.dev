@@ -1,0 +1,26 @@
+# =============================================================================
+# Development Dockerfile for React Frontend
+# Features:
+# - Hot reload with Vite
+# - Volume mounts for live code changes
+# - Fast refresh
+# =============================================================================
+
+FROM node:18-alpine AS development
+
+# Install development tools
+RUN apk add --no-cache git
+
+WORKDIR /app
+
+# Copy package files
+COPY package.json package-lock.json ./
+
+# Install dependencies
+RUN npm install
+
+# Expose Vite dev server port
+EXPOSE 5173
+
+# Default command (can be overridden in docker-compose)
+CMD ["npm", "run", "dev", "--", "--host", "0.0.0.0"]
